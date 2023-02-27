@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\VerifyEmailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::controller(AuthController::class)->group(function () {
+    Route::post('register', 'register');
+    Route::post('login', 'login');
 });
+// Verify email using the link sent after registration
+Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, 'verifyEmail'])
+    ->middleware(['signed'])
+    ->name('verification.verify');
+
+
+
+
+
+
+
+
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    // Resend link to verify email
+    Route::post('/email/verify/resend', [VerifyEmailController::class, 'resendVerificationEmail'])
+        ->name('verification.send');
+
+    Route::get('/has_verified_email', [VerifyEmailController::class, 'hasVerifiedEmail']);
+});
+
+
