@@ -21,11 +21,12 @@ class AuthController extends BaseController
         $user = User::create($input);
         $success['token'] =  $user->createToken('MyApp')->plainTextToken;
         $success['name'] =  $user->name;
+        //in EventServiceProvider --SendEmailVerificationNotification listener is attacked to Registered
         event(new Registered($user));
         return $this->sendResponse($success, 'You have registered successfully,please check your email to verify your account');
     }
    
-  
+
     public function login(Request $request)
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
