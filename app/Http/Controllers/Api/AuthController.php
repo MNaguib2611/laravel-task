@@ -24,7 +24,7 @@ class AuthController extends BaseController
         $success['name'] =  $user->name;
         //in EventServiceProvider --SendEmailVerificationNotification listener is attacked to Registered
         event(new Registered($user));
-        return $this->sendResponse($success, 'You have registered successfully,please check your email to verify your account');
+        return $this->sendResponse($success, 'You have registered successfully,please check your email to verify your account',201);
     }
    
 
