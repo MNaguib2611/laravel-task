@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
    
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController as BaseController;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +28,7 @@ class AuthController extends BaseController
     }
    
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             /** @var \App\Models\User $user **/
