@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\User\UserLoginResource;
+use App\Http\Resources\User\UserResource;
 use App\Models\User;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
 
 class AuthController extends BaseController
 {
@@ -17,14 +19,8 @@ class AuthController extends BaseController
     public function register(RegisterRequest $request)
     {
         $input = $request->validated();
-        $input['password'] = Hash::make($input['password']);
-        /** @var \App\Models\User $user **/
         $user = User::create($input);
-        $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-        $success['name'] =  $user->name;
-        //in EventServiceProvider --SendEmailVerificationNotification listener is attacked to Registered
-        event(new Registered($user));
-        return $this->sendResponse($success, 'You have registered successfully,please check your email to verify your account',201);
+        return $this->sendResponse(new UserResource($user), 'Registered complete, please check your email to verify your account',201);
     }
    
 
@@ -33,10 +29,7 @@ class AuthController extends BaseController
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             /** @var \App\Models\User $user **/
             $user = Auth::user(); 
-            $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
-            $success['name'] =  $user->name;
-   
-            return $this->sendResponse($success, 'User login successfully.');
+            return $this->sendResponse(new UserLoginResource($user), 'User login successfully.');
         } 
         else{ 
             return $this->sendError('Unauthorized.', ['error'=>'Unauthorized']);

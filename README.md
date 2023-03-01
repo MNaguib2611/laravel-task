@@ -12,9 +12,16 @@
  8- Run `php artisan queue:work` to start the queue
  9- Import Postman Collection from `postman` folder to test the endpoints
 
-PS: the `.env.example` is prefilled with env variables for convenience only
- ### Alternatively ,
-  you could the `./bin/start.sh` script that uses `docker-compose.yml` file but make sure to modify the `.env `variables accordingly 
+
+ ## Registration cycle
+ 1- Users submits their name, username & password
+ 2- `RegisterRequest` validates data and return failed response with invalid data
+ 3- User is created in the model and `password` setter hashes it before saving to the database
+ 4- Once the user is created ,the `UserObserver` triggers `created` method 
+ 5- the  `UserObserver:created ` method dispatches `Registered` event 
+ 6- The `Registered` event is a built in Laravel event to send the confirmation email to the user
+ 7- in the `User` model, overriding `sendEmailVerificationNotification` method to make it use `VerifyEmailQueued` instead of `VerifyEmail`
+ 8- `VerifyEmailQueued` is class that extends the built in Laravel `VerifyEmail` utilizing all it's features and making it run in a queue
 
 
  ## Endpoints
@@ -29,7 +36,7 @@ PS: the `.env.example` is prefilled with env variables for convenience only
 
 
 ## Testing 
-simply run `php artisan test to run all test cases`
+simply run `php artisan test`  to run all test cases
 ### Note
 All tests were done as feature test as `unit test` is not supposed to connect to database or hit endpoints 
 
@@ -64,4 +71,4 @@ All tests were done as feature test as `unit test` is not supposed to connect to
 ## for manual testing
 * use postman Collection
 * check the records in database jobs & failed jobs
-* confirm that `register` & `resend` endpoint execute without without waiting for the email
+* confirm that `register` & `resend` endpoint execute without waiting for the email
