@@ -2,10 +2,10 @@
 
 
 # Initial Setup
- 1- Clone the project
+ 1- Clone the project `https://github.com/MNaguib2611/laravel-task`
  2- create `hitech` & `hitech_testing` databases in mysql 
  3- cp `.env.example` into `.env` and configure your env variables
- 4- Use `mailtrap` to get credentials for a test inbox and use them in .env 
+ 4- Use `mailtrap` to get credentials for a test inbox and use them in `.env `
  5- Run `composer install`
  6- Run `php artisan migrate` to run migrations project
  7- Run `php artisan serve` to start project
@@ -13,7 +13,7 @@
  9- Import Postman Collection from `postman` folder to test the endpoints
 
 
- ## Registration cycle
+ ## How the code works
  1- Users submits their name, username & password
  2- `RegisterRequest` validates data and return failed response with invalid data
  3- User is created in the model and `password` setter hashes it before saving to the database
